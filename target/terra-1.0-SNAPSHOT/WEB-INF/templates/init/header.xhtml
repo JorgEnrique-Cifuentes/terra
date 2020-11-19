@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html [
+    <!ENTITY times "&#215;">]>
+    <ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+        <!-- Sidebar -->
+        <div id="sidebarMenu">
+            <ui:include src="sidebarMenu.xhtml"/>
+        </div>
+        <div id="wrapper">
+
+            <!-- View Menú -->
+            <div id="viewMenuCms">
+                <ui:include src="viewMenu.xhtml"/>
+            </div>
+            <!-- /.content-wrapper -->
+            <div id="content-wrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <h:panelGroup id="content">
+                                <ui:insert
+                                    name="content"/>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="scroll-to-top rounded" href="#page-top">
+            <p:graphicImage name="icons/arrow-up.svg"
+			    width="10"/>
+        </a>
+    </ui:composition>

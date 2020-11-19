@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:form>
+        <p:growl  globalOnly="true"
+                  showDetail="true"
+                  rendered="#{!facesContext.validationFailed}"
+                  showSummary="true"/>
+        <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+            <a class="logo-positiva">
+                <p:graphicImage
+                    class="img-input"
+                    width="220"
+                    name="img/logo-positiva.png"
+                    />
+            </a>
+
+
+            <!-- Navbar Search -->
+            <div class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0"/>
+
+
+            <!-- Navbar -->
+            <ul class="navbar-nav ml-auto ml-md-0">
+                <li class="nav-item dropdown no-arrow">
+                    <a class="nav-link dropdown-toggle" href="#"
+                       id="userDropdown" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user-circle fa-fw fa-3x"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    </div>
+                </li>W
+            </ul>
+
+        </nav>
+    </h:form>
+</ui:composition>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/templates/templateLogin.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+    <ui:define name="content">
+        <div class="wrapper fadeInDown">
+            <div id="formContent">
+                <br/>
+                <div class="fadeIn first">
+                    <p:graphicImage 
+                        name= "logo.jpeg"
+                        height="150" width="200"
+                        library="img"/>
+
+                </div>
+                <br/>
+                <h:form id="loginForm">
+                    <p:growl id="growl" 
+                             showDetail="true"
+                             />
+                    <div>
+                        <i class="fa fa-id-card fa-2x"></i>
+                        <p:inputText value="#{loginMb.loginDto.identificacion}"
+                                     class="fadeIn first"
+                                     id="login"
+                                     onkeyup="buttonLogin('login')"
+                                     maxlength="10"
+                                     placeholder="identificación">
+                        </p:inputText>
+                    </div>
+                    <div>
+                        <i class="fa fa-lock fa-2x"></i>
+                        <p:password value="#{loginMb.loginDto.contrasena}"
+                                    id="password"
+                                    maxlength="15"
+                                    onkeyup="buttonLogin('login')"
+                                    autocomplete="off"
+                                    class="fadeIn second"
+                                    placeholder="contraseña"/>
+                    </div>
+                    <br/>
+                    <p:commandButton class="btn btn-primary btn-lg fadeIn third"
+                                     widgetVar="buttonLogin"
+                                     update="growl"
+                                     action="#{loginMb.iniciarSesion()}"
+                                     value="Iniciar sesión"/>
+                    <br/><br/>  
+                </h:form>
+
+                <!-- Remind Passowrd -->
+                <h:form id="formPassword">
+                    <div id="formFooter">
+                        <p:commandLink class="underlineHover"
+                                       action="#{loginMb.resetInput()}"
+                                       oncomplete="PF('dialogResetPassword').show()"
+                                       value="Olvido su contraseña?"/>
+                    </div>
+                </h:form>
+            </div>
+
+            <p:dialog widgetVar="dialogResetPassword"
+                      responsive="true" 
+                      resizable="false"
+                      dynamic="true"
+                      closable="true"
+                      showEffect="explode"
+                      hideEffect="explode">
+                <f:facet name="header">
+                    <div style="margin-left: 0px;">
+                        <center>
+                            <i class="fa fa-lock fa-3x"></i>
+                            <p>Se te olvido la contraseña?</p>
+                            <p>Puede restablecer su contraseña aquí.</p>
+                        </center>
+                    </div>
+                </f:facet>
+                <h:form id="passwordForm">
+                    <i class="fa fa-id-card fa-2x"></i>
+                    <p:inputText id="identiMail"
+                                 value="#{loginMb.loginDto.identificacionRestablecer}"
+                                 placeholder="identificación"
+                                 size="10"
+                                 maxlength="10"
+                                 />
+                    <p:keyFilter for="identiMail" mask="num"/>
+                    <br/><br/>
+                    <center>
+                        <p:commandButton value="Restablecer contraseña"
+                                         update=":loginForm:growl"
+                                         class="btn btn-primary btn-lg"
+                                         action="#{loginMb.restablecerPassword()}"/>
+                    </center>
+                </h:form> 
+
+            </p:dialog>
+        </div>
+    </ui:define> 
+
+</ui:composition>

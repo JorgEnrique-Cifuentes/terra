@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/templates/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+    <ui:define name="content">
+
+        <h:form id="QueryHojaVida">
+            <ul class="breadcrumb">
+                <li><h1>SELECCIÓN</h1></li>
+            </ul>
+            <p:outputPanel style="text-align: right">
+                <p:commandButton value="Nueva hoja de vida"  
+                                 title="Crear"
+                                 action="#{curriculumMb.clean()}"
+                                 update=":QueryHojaVida"
+                                 oncomplete="PF('dialogCurriculum').show()"
+                                 icon="fa fa-plus-circle"
+                                 styleClass="btn btn-success">
+                </p:commandButton>                
+            </p:outputPanel>
+            <p:dataTable value="#{curriculumMb.listaCurriculums}"
+                         id="curriculum"
+                         rowKey="#{curriculum.idAspirante}"
+                         paginator="true"
+                         filteredValue="#{curriculumMb.filter}"
+                         selection="#{curriculumMb.curriculumSeleccionados}"
+                         rows="5"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                         rowsPerPageTemplate="10,20"
+                         var="curriculum" 
+                         emptyMessage="No se han encontrado hojas de vida">
+
+                <f:facet name="header">
+                    <div style="float:right;padding-top: 5px;">
+                        <h:commandLink>
+                            <p:graphicImage name="sobresalir.png" library="img" width="24"/>
+                            <p:dataExporter type="xls" target="curriculum" 
+                                            fileName="HojasDeVida"/>
+                        </h:commandLink>
+                    </div>
+                </f:facet>
+
+                <p:column headerText="Id Asp." filterBy="#{curriculum.idAspirante}">
+                    <h:outputText value="#{curriculum.idAspirante}"/>
+                </p:column>
+                <p:column headerText="N° identificación" filterBy="#{curriculum.numeroDocumento}">
+                    <h:outputText value="#{curriculum.numeroDocumento}"/>
+                </p:column>              
+                <p:column headerText="Primer nombre" filterBy="#{curriculum.primerNombre}">
+                    <h:outputText value="#{curriculum.primerNombre}"/>
+                </p:column>
+                <p:column headerText="Segundo nombre" filterBy="#{curriculum.segundoNombre}">
+                    <h:outputText value="#{curriculum.segundoNombre}"/>
+                </p:column>
+                <p:column headerText="Primer apellido" filterBy="#{curriculum.primerApellido}">
+                    <h:outputText value="#{curriculum.primerApellido}"/>
+                </p:column>
+                <p:column headerText="Segundo apellido" filterBy="#{curriculum.segundoApellido}">
+                    <h:outputText value="#{curriculum.segundoApellido}"/>
+                </p:column>
+                <p:column headerText="Dirección" filterBy="#{curriculum.direccion}">
+                    <h:outputText value="#{curriculum.direccion}"/>
+                </p:column>
+                <p:column headerText="Teléfono" filterBy="#{curriculum.telefono}">
+                    <h:outputText value="#{curriculum.telefono}"/>
+                </p:column>
+                <p:column headerText="Profesión    " filterBy="#{curriculum.profesion}">
+                    <h:outputText value="#{curriculum.profesion}"/>
+                </p:column>
+
+                <p:column selectionMode="multiple" style="text-align:center"/>
+                <p:column headerText="Acciones" exportable="false"  >
+                    <center>
+                        <p:commandButton icon="fa fa-edit"
+                                         title="Editar"
+                                         update="formCreateHojaVida"
+                                         oncomplete="PF('dialogCurriculum').show()"
+                                         styleClass="btn btn-warning"
+                                         immediate="true"
+                                         action="#{curriculumMb.preEditar(curriculum)}"
+                                         >
+                        </p:commandButton>
+                        <p:commandButton icon="fa fa-trash"
+                                         title="Eliminar"
+                                         styleClass="btn btn-danger"
+                                         immediate="true"
+                                         update="QueryHojaVida:curriculum, growl"
+                                         action="#{curriculumMb.delete(curriculum)}"
+                                         >
+
+                            <p:confirm header="Confirmación" 
+                                       message="¿Esta seguro de eliminar este registro?" 
+                                       icon="fal fa-exclamation-triangle" />
+                        </p:commandButton>
+                        <p:commandButton icon="fa fa-upload"
+                                         title="Subir certificados"
+                                         styleClass="btn btn-success"
+                                         immediate="true"
+                                         oncomplete="PF('dialogCertificados').show()"
+                                         update="formCertificados"
+                                         action="#{curriculumCertificadosMb.loadCertificaciones(curriculum.numeroDocumento)}"
+                                         >
+                        </p:commandButton>
+                    </center>
+                </p:column>
+            </p:dataTable>
+
+            <br></br>
+            <p:outputPanel style="text-align: center">
+                <p:commandButton value="Enviar a pruebas psicotécnicas" 
+                                 title="Enviar pruebas psicotécnicas"
+                                 update="multiCurriculumDetail"
+                                 oncomplete="PF('multiCurriculumDialog').show()"
+                                 icon="fa fa-paper-plane"
+                                 styleClass="btn btn-primary"
+                                 >
+                </p:commandButton>
+            </p:outputPanel>
+            
+            <p:confirmDialog global="true" showEffect="fade" 
+                             hideEffect="fade">
+                <p:commandButton value="Si" type="button"
+                                 styleClass="ui-confirmdialog-yes" 
+                                 icon="fa fa-check" />
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no" 
+                                 icon="fa fa-window-close" />
+            </p:confirmDialog>  
+
+            <p:dialog header="PERSONAL-PRUEBAS PSICOTÉCNICAS" widgetVar="multiCurriculumDialog"   width="1500">
+                <p:dataTable value="#{curriculumMb.curriculumSeleccionados}"
+                             selection="#{curriculumMb.curriculumSeleccionados2}"
+                             rowKey="#{curriculum.idAspirante}"
+                             id="multiCurriculumDetail"
+                             paginator="true"
+                             rows="5"
+                             rowsPerPageTemplate="10,20"
+                             var="curriculum">
+                    <f:facet name="header">
+                        <div style="float:right;padding-top: 5px;">
+                            <h:commandLink>
+                                <p:graphicImage name="sobresalir.png" library="img" width="24"/>
+                                <p:dataExporter type="xls" target="curriculum" 
+                                                fileName="HojasDeVida"/>
+                            </h:commandLink> 
+                        </div>
+                    </f:facet>
+                    <p:column headerText="Id Asp." filterBy="#{curriculum.idAspirante}">
+                        <h:outputText value="#{curriculum.idAspirante}"/>
+                    </p:column>
+                    <p:column headerText="N° identificación" filterBy="#{curriculum.numeroDocumento}">
+                        <h:outputText value="#{curriculum.numeroDocumento}"/>
+                    </p:column>              
+                    <p:column headerText="Primer nombre" filterBy="#{curriculum.primerNombre}">
+                        <h:outputText value="#{curriculum.primerNombre}"/>
+                    </p:column>
+                    <p:column headerText="Segundo nombre" filterBy="#{curriculum.segundoNombre}">
+                        <h:outputText value="#{curriculum.segundoNombre}"/>
+                    </p:column>
+                    <p:column headerText="Primer apellido" filterBy="#{curriculum.primerApellido}">
+                        <h:outputText value="#{curriculum.primerApellido}"/>
+                    </p:column>
+                    <p:column headerText="Segundo apellido" filterBy="#{curriculum.segundoApellido}">
+                        <h:outputText value="#{curriculum.segundoApellido}"/>
+                    </p:column>
+                    <p:column headerText="Dirección" filterBy="#{curriculum.direccion}">
+                        <h:outputText value="#{curriculum.direccion}"/>
+                    </p:column>
+                    <p:column headerText="Teléfono" filterBy="#{curriculum.telefono}">
+                        <h:outputText value="#{curriculum.telefono}"/>
+                    </p:column>
+                    <p:column headerText="Profesión" filterBy="#{curriculum.profesion}">
+                        <h:outputText value="#{curriculum.profesion}"/>
+                    </p:column>
+                    <p:column headerText="APROBADO" selectionMode="multiple" style="text-align:center" />
+                    <p:column headerText="OBSERVACIONES"></p:column>
+                    
+                </p:dataTable>
+                
+              <p:spacer width="10" 
+                          height="10"/>
+              <h:panelGroup class="ui-g-12">
+                    <p:commandButton styleClass="btn btn-danger"
+                                     icon="fa fa-long-arrow-left"
+                                     immediate="true"
+                                     update="formCreateHojaVida"
+                                     action="#{curriculumMb.clean()}"
+                                     oncomplete="PF('dialogCurriculum').hide()"
+                                     value="Cancelar"/>
+                    <p:commandButton value="Guardar"
+                                     icon="fa fa-check"
+                                     styleClass="btn btn-primary"
+                                     action="#{curriculumMb.guardar()}" 
+                                     update="formCreateHojaVida, QueryHojaVida growl"/>
+               </h:panelGroup>
+            </p:dialog>
+            
+        </h:form>
+
+        <p:dialog widgetVar="dialogCurriculum"
+                  position="center"
+                  responsive="true"
+                  width="1300"
+                  height="700"
+                  closeOnEscape="false"
+                  closable="false"
+                  modal="true"
+                  resizable="false"
+                  draggable="false" dynamic="true"
+                  showEffect="explode" hideEffect="explode">
+            <f:facet name="header">
+                Crear hoja de vida
+            </f:facet>
+            <h:form id="formCreateHojaVida">
+                <p:panelGrid columns="2">
+                    <p:column>
+                        <p:panelGrid id="panelGridDatosBasicos" 
+                                     columns="1" styleClass="ui-panelgrid-blank ui-fluid">
+                            <p:column>
+                                <h:panelGroup class="ui-g-12">
+                                    <span class="ui-float-label">
+                                        <p:inputText value="#{curriculumMb.curriculumDto.idAspirante}"
+                                                     required="true"
+                                                     requiredMessage="Campo obligatorio"
+                                                     id="inputId">
+                                            <p:keyFilter regEx="/[\d\-\.]/"/>
+                                        </p:inputText>
+                                        <p:outputLabel for="@previous" value="Id Asp." />
+                                        <p:message for="inputId"/>
+                                    </span>
+                                </h:panelGroup>
+                            </p:column>
+                            <p:column>
+                                <h:panelGroup class="ui-g-12">
+                                    <p:selectOneMenu value="#{curriculumMb.curriculumDto.tipoDocumento}"
+                                                     filter="true"
+                                                     required="true"
+                                                     requiredMessage="Campo obligatorio"
+                                                     id="selectTipoDocumento"
+                                                     panelStyleClass="selectpicker"
+                                                     effect="fold">
+                                        <f:selectItem itemLabel="Seleccionar un tipo de documento*" 
+                                                      itemValue="#{null}"/>
+                                        <f:selectItems value="#{listaTiposDocumentos}"
+                                                       var="tipoDocumento"
+                                                       itemLabel="#{tipoDocumento.valor}"
+                                                       itemValue="#{tipoDocumento.valor}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="selectTipoDocumento"/>
+                                </h:panelGroup>
+                            </p:column>
+
+                            <p:column>
+                                <h:panelGroup class="ui-g-12">
+                                    <span class="ui-float-label">
+                                        <p:inputText value="#{curriculumMb.curriculumDto.numeroDocumento}"
+                                                     required="true"
+                                                     requiredMessage="Campo obligatorio"
+                                                     id="inputNumero">
+                                            <p:keyFilter regEx="/[\d\-\.]/"/>
+                                        </p:inputText>
+                                        <p:outputLabel for="@previous" value="Número de documento*" />
+                                        <p:message for="inputNumero"/>
+                                    </span>
+                                </h:panelGroup>
+                            </p:column>
+                            <h:panelGroup class="ui-g-12">
+                                <span class="ui-float-label">
+                                    <p:inputText value="#{curriculumMb.curriculumDto.primerNombre}"
+                                                 required="true"
+                                                 requiredMessage="Campo obligatorio"
+                                                 id="inputPrimerNombre">
+                                    </p:inputText>
+                                    <p:outputLabel for="@previous" value="Primer nombre*" />
+                                    <p:message for="inputPrimerNombre"/>
+                                </span>
+                            </h:panelGroup>
+
+                            <h:panelGroup class="ui-g-12">
+                                <span class="ui-float-label">
+                                    <p:inputText value="#{curriculumMb.curriculumDto.segundoNombre}"
+                                                 id="inputSegundoNombre">
+                                    </p:inputText>
+                                    <p:outputLabel for="@previous" value="Segundo nombre" />
+                                    <p:message for="inputSegundoNombre"/>
+                                </span>
+                            </h:panelGroup>
+
+                            <h:panelGroup class="ui-g-12">
+                                <span class="ui-float-label">
+                                    <p:inputText value="#{curriculumMb.curriculumDto.primerApellido}"
+                                                 required="true"
+                                                 requiredMessage="Campo obligatorio"
+                                                 id="inputPrimerApellido">
+                                    </p:inputText>
+                                    <p:outputLabel for="@previous" value="Primer apellido*" />
+                                    <p:message for="inputPrimerApellido"/>
+                                </span>
+                            </h:panelGroup>
+
+                            <h:panelGroup class="ui-g-12">
+                                <span class="ui-float-label">
+                                    <p:inputText value="#{curriculumMb.curriculumDto.segundoApellido}"
+                                                 id="inputSegundoApellido">
+                                    </p:inputText>
+                                    <p:outputLabel for="@previous" value="Segundo apellido" />
+                                    <p:message for="inputSegundoApellido"/>
+                                </span>
+                            </h:panelGroup>
+                            <h:panelGroup class="ui-g-12">
+                                <span class="ui-float-label">
+                                    <p:inputText value="#{curriculumMb.curriculumDto.correoElectronico}"
+                                                 required="true"
+                                                 validatorMessage="No es un correo valido"
+                                                 requiredMessage="Campo obligatorio"
+                                                 id="inputCorreo">
+                                        <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"/>
+                                    </p:inputText>
+                                    <p:outputLabel for="@previous" value="Correo electronico*" />
+                                    <p:message for="inputCorreo"/>
+                                </span>
+                            </h:panelGroup>
+
+                            <h:panelGroup class="ui-g-12">
+                                <span class="ui-float-label">
+                                    <p:inputMask value="#{curriculumMb.curriculumDto.telefono}"
+                                                 mask="(999) 999-9999"
+                                                 converter="numberConverter"
+                                                 required="true"
+                                                 requiredMessage="Campo obligatorio"
+                                                 id="inputTelefono">
+                                    </p:inputMask>
+                                    <p:outputLabel for="@previous" value="Telefono*" />
+                                    <p:message for="inputTelefono"/>
+                                </span>
+                            </h:panelGroup>
+
+                            <h:panelGroup class="ui-g-12">
+                                <span class="ui-float-label">
+                                    <p:inputText value="#{curriculumMb.curriculumDto.direccion}"
+                                                 required="true"
+                                                 requiredMessage="Campo obligatorio"
+                                                 id="inputDireccion">
+                                    </p:inputText>
+                                    <p:outputLabel for="@previous" value="Dirección*" />
+                                    <p:message for="inputDireccion"/>
+                                </span>
+                            </h:panelGroup>
+
+                            <h:panelGroup class="ui-g-12">
+                                <span class="ui-float-label">
+                                    <p:inputText value="#{curriculumMb.curriculumDto.profesion}"
+                                                 required="true"
+                                                 requiredMessage="Campo obligatorio"
+                                                 id="inputProfesion">
+                                    </p:inputText>
+                                    <p:outputLabel for="@previous" value="Profesión*" />
+                                    <p:message for="inputProfesion"/>
+                                </span>
+                            </h:panelGroup>
+                            <h:panelGroup class="ui-g-12">
+                                <p:selectOneMenu value="#{curriculumMb.curriculumDto.idCiudad}"
+                                                 filter="true"
+                                                 required="true"
+                                                 requiredMessage="Campo obligatorio"
+                                                 id="inputLugar"
+                                                 panelStyleClass="selectpicker"
+                                                 effect="fold">
+                                    <f:selectItem itemLabel="Seleccionar un lugar de trabajo*" 
+                                                  itemValue="#{null}"/>
+                                    <f:selectItems value="#{listaCiudades}"
+                                                   var="ciudad"
+                                                   itemLabel="#{ciudad.valor}"
+                                                   itemValue="#{ciudad.id}"/>
+                                </p:selectOneMenu>
+                                <p:message for="inputLugar"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </p:column>
+
+                    <p:column>
+                        <div class="ui-g-12">
+                            <p:dataTable value="#{curriculumMb.curriculumDto.listaExperienciaLaboral}"
+                                         id="experienciaLaboral"
+                                         paginator="true"
+                                         rows="5"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                                         rowsPerPageTemplate="5"
+                                         var="experienciaLaboral" 
+                                         emptyMessage="No se han encontrado experiencias laborales">
+                                <f:facet name="header">
+                                    <p:outputPanel style="text-align: right">
+                                        <p:commandButton icon="fa fa-plus-circle"
+                                                         title="Crear"
+                                                         oncomplete="PF('dialogExperienciaLaboral').show()"
+                                                         styleClass="btn btn-success"/>
+                                    </p:outputPanel>
+                                </f:facet>
+                                <p:column headerText="Empresa">
+                                    <h:outputText value="#{experienciaLaboral.empresa}"/>
+                                </p:column>                
+                                <p:column headerText="Cargo">
+                                    <h:outputText value="#{experienciaLaboral.cargo}"/>
+                                </p:column>              
+                                <p:column headerText="Fecha inicial">
+                                    <h:outputText value="#{experienciaLaboral.fechaInicial}">
+                                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Fecha final">
+                                    <h:outputText value="#{experienciaLaboral.fechaFinal}">
+                                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <p:dataTable value="#{curriculumMb.curriculumDto.listaEstudiosRealizados}"
+                                         id="estudiosRealizados"
+                                         paginator="true"
+                                         rows="5"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                                         rowsPerPageTemplate="5"
+                                         var="estudiosRealizados" 
+                                         emptyMessage="No se han encontrado estudios">
+                                <f:facet name="header">
+                                    <p:outputPanel style="text-align: right">
+                                        <p:commandButton icon="fa fa-plus-circle"
+                                                         title="Crear"
+                                                         oncomplete="PF('dialogEstudiosRealizados').show()"
+                                                         styleClass="btn btn-success"/>
+                                    </p:outputPanel>
+                                </f:facet>
+                                <p:column headerText="Institución">
+                                    <h:outputText value="#{estudiosRealizados.institucion}"/>
+                                </p:column>                
+                                <p:column headerText="Titulo">
+                                    <h:outputText value="#{estudiosRealizados.titulo}"/>
+                                </p:column>              
+                                <p:column headerText="Año de graduación">
+                                    <h:outputText value="#{estudiosRealizados.anoGraduacion}">
+                                        <f:convertDateTime pattern="yyyy" />
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </p:column>
+                </p:panelGrid>
+                <p:spacer width="10" 
+                          height="10"/>
+                <h:panelGroup class="ui-g-12">
+                    <p:commandButton styleClass="btn btn-danger"
+                                     icon="fa fa-long-arrow-left"
+                                     immediate="true"
+                                     update="formCreateHojaVida"
+                                     action="#{curriculumMb.clean()}"
+                                     oncomplete="PF('dialogCurriculum').hide()"
+                                     value="Cancelar"/>
+                    <p:commandButton value="Guardar"
+                                     icon="fa fa-check"
+                                     styleClass="btn btn-primary"
+                                     action="#{curriculumMb.guardar()}" 
+                                     update="formCreateHojaVida, QueryHojaVida growl"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dialogExperienciaLaboral"
+                  position="center"
+                  responsive="true"
+                  resizable="false"
+                  closeOnEscape="false"
+                  closable="false"
+                  modal="true" draggable="false" dynamic="true"
+                  header="Agregar experiencia laboral"
+                  showEffect="explode" hideEffect="explode">
+            <h:form id="formExperienciaLaboral">
+                <p:panelGrid id="panelExperienciaLaboral" columns="1" 
+                             styleClass="ui-panelgrid-blank ui-fluid">
+
+                    <h:panelGroup class="ui-g-12">
+                        <span class="ui-float-label">
+                            <p:inputText value="#{curriculumMb.experienciaLaboralDto.empresa}"
+                                         required="true"
+                                         size="60"
+                                         requiredMessage="Campo obligatorio"
+                                         id="inputEmpresa">
+                            </p:inputText>
+                            <p:outputLabel for="@previous" value="Empresa*" />
+                            <p:message for="inputEmpresa"/>
+                        </span>
+                    </h:panelGroup>
+
+                    <h:panelGroup class="ui-g-12">
+                        <span class="ui-float-label">
+                            <p:inputText value="#{curriculumMb.experienciaLaboralDto.cargo}"
+                                         required="true"
+                                         size="60"
+                                         requiredMessage="Campo obligatorio"
+                                         id="inputCargo">
+                            </p:inputText>
+                            <p:outputLabel for="@previous" value="Cargo*" />
+                            <p:message for="inputCargo"/>
+                        </span>
+                    </h:panelGroup>
+
+                    <h:panelGroup class="ui-g-12">
+                        <span class="ui-float-label">
+                            <p:datePicker id="touch" value="#{curriculumMb.experienciaLaboralDto.fechaInicial}"
+                                          pattern="yyyy-MM-dd"
+                                          required="true"
+                                          size="60"
+                                          locale="es_CO"
+                                          requiredMessage="Campo obligatorio"
+                                          showIcon="true"
+                                          readonlyInput="true"
+                                          />
+                            <p:outputLabel for="@previous" value="Fecha inicial*" />
+                            <p:message for="touch"/>
+                        </span>
+                    </h:panelGroup>
+
+                    <h:panelGroup class="ui-g-12">
+                        <span class="ui-float-label">
+                            <p:datePicker id="touchFinal" value="#{curriculumMb.experienciaLaboralDto.fechaFinal}"
+                                          pattern="yyyy-MM-dd"
+                                          required="true"
+                                          size="60"
+                                          requiredMessage="Campo obligatorio"
+                                          readonlyInput="true"
+                                          showIcon="true"
+                                          />
+                            <p:outputLabel for="@previous" value="Fecha final*" />
+                            <p:message for="touchFinal"/>
+                        </span>
+                    </h:panelGroup>
+
+                </p:panelGrid>
+                <h:panelGroup class="ui-g-12">
+                    <p:commandButton styleClass="btn btn-danger"
+                                     icon="fa fa-long-arrow-left"
+                                     immediate="true"
+                                     update="formExperienciaLaboral"
+                                     oncomplete="PF('dialogExperienciaLaboral').hide()"
+                                     value="Cancelar"/>
+                    <p:commandButton value="Guardar"
+                                     icon="fa fa-check"
+                                     update="formExperienciaLaboral, formCreateHojaVida:experienciaLaboral, growl"
+                                     styleClass="btn btn-primary"
+                                     action="#{curriculumMb.guardarExperienciaLaboral()}" 
+                                     />
+                </h:panelGroup>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dialogEstudiosRealizados"
+                  position="center"
+                  responsive="true"
+                  resizable="false"
+                  closeOnEscape="false"
+                  closable="false"
+                  modal="true" draggable="false" dynamic="true"
+                  header="Agregar estudios realizados"
+                  showEffect="explode" hideEffect="explode">
+            <h:form id="formEstudiosRealizados">
+                <p:panelGrid id="panelEstudiosRealizados" columns="1" 
+                             styleClass="ui-panelgrid-blank ui-fluid">
+
+                    <h:panelGroup class="ui-g-12">
+                        <span class="ui-float-label">
+                            <p:inputText value="#{curriculumMb.estudiosRealizadosDto.institucion}"
+                                         size="60"
+                                         id="inputInstitucion">
+                            </p:inputText>
+                            <p:outputLabel for="@previous" value="Institución*" />
+                        </span>
+                    </h:panelGroup>
+
+                    <h:panelGroup class="ui-g-12">
+                        <span class="ui-float-label">
+                            <p:inputText value="#{curriculumMb.estudiosRealizadosDto.titulo}"
+                                         size="60"
+                                         id="inputTitulo">
+                            </p:inputText>
+                            <p:outputLabel for="@previous" value="Titulo*" />
+                        </span>
+                    </h:panelGroup>
+                    <h:panelGroup class="ui-g-6">
+                        <span class="ui-float-label">
+                            <p:datePicker id="touchEstudios" value="#{curriculumMb.estudiosRealizadosDto.anoGraduacion}"
+                                          pattern="yyyy"
+                                          size="60"
+                                          showIcon="true"
+                                          readonlyInput="true"
+                                          />
+                            <p:outputLabel for="@previous" value="Año de graduación*" />
+                        </span>
+                    </h:panelGroup>
+
+                </p:panelGrid>
+                <h:panelGroup class="ui-g-12">
+                    <p:commandButton styleClass="btn btn-danger"
+                                     icon="fa fa-long-arrow-left"
+                                     immediate="true"
+                                     update="formEstudiosRealizados"
+                                     oncomplete="PF('dialogEstudiosRealizados').hide()"
+                                     value="Cancelar"/>
+                    <p:commandButton value="Guardar"
+                                     icon="fa fa-check"
+                                     update="formEstudiosRealizados, formCreateHojaVida:estudiosRealizados, growl"
+                                     styleClass="btn btn-primary"
+                                     action="#{curriculumMb.guardarEstudiosRealizados()}" 
+                                     />
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dialogCertificados"
+                  position="center"
+                  responsive="true"
+                  resizable="false"
+                  width="800"
+                  height="400"
+                  modal="true" draggable="false" dynamic="true"
+                  header="Agregar certificados"
+                  showEffect="explode" hideEffect="explode">
+            <h:form id="formCertificados">
+                <h:panelGroup class="ui-g-12">
+                    <p:fileUpload id="certificacionExperiencia"
+                                  listener="#{curriculumCertificadosMb.uploadFile}"
+                                  mode="advanced"
+                                  update="formCertificados, growl"
+                                  fileLimitMessage="Solo se puede subir 1 archivo"
+                                  cancelLabel="cancelar"
+                                  label="Subir certificado"
+                                  uploadLabel="Subir archivo"
+                                  sizeLimit="1000000"
+                                  invalidSizeMessage="El archivo no debe superar 1 mb"
+                                  auto="true" allowTypes="/(\.|\/)(pdf)$/" />
+                </h:panelGroup>
+
+                <h:panelGroup class="ui-g-12">
+                    <p:repeat value="#{curriculumCertificadosMb.listaArchivos}"
+                              varStatus="position"
+                              var="certificado">
+                        <h:panelGroup id="fileExperiencia" class="ui-g-6">
+                            <h:panelGroup>
+                                <div class="ui-g-3">
+                                    <p:graphicImage name="pdf_new.svg"
+                                                    height="40"
+                                                    title="#{certificado.fileName}"
+                                                    width="40"
+                                                    library="img"/>
+                                </div>
+                                <div class="ui-g-2">
+                                    <p:commandLink class="text-white"
+                                                   title="Eliminar"
+                                                   action="#{curriculumCertificadosMb.eliminar(certificado, position.index)}"
+                                                   immediate="true"
+                                                   update="formCertificados, growl">
+                                        <p:graphicImage name="delete-file.svg"
+                                                        height="20"
+                                                        width="20"
+                                                        library="img"/>
+                                    </p:commandLink>
+
+                                </div>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </p:repeat>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

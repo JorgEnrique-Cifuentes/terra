@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/templates/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+
+    <ui:define name="content">
+        <ul class="breadcrumb">
+            <li><h1>SOLICITUD</h1></li>
+        </ul>
+        <h:form id="formSolicitud">
+            <p:dialog widgetVar="dialogSolicitud"
+                      position="center"
+                      responsive="true"
+                      resizable="false"
+                      closeOnEscape="false"
+                      closable="false"
+                      modal="true" draggable="false" dynamic="true"
+                      showEffect="explode" hideEffect="explode">
+                <p:panelGrid id="panelSolicitud" columns="1" 
+                             styleClass="ui-panelgrid-blank ui-fluid">
+                    <h:panelGroup class="ui-g-12">
+                        <p:selectOneMenu value="#{solicitudMb.solicitudDto.cargoDto.idCARGO}"
+                                         filter="true"
+                                         required="true"
+                                         requiredMessage="Campo obligatorio"
+                                         id="selectCargo"
+                                         panelStyleClass="selectpicker"
+                                         effect="fold">
+                            <f:selectItem itemLabel="Seleccionar un cargo*" 
+                                          itemValue="#{null}"/>
+                            <f:selectItems value="#{solicitudMb.listaCargos}"
+                                           var="cargo"
+                                           itemLabel="#{cargo.nombre}"
+                                           itemValue="#{cargo.idCARGO}"/>
+                        </p:selectOneMenu>
+                        <p:message for="selectCargo"/>
+                    </h:panelGroup>
+                    <h:panelGroup class="ui-g-12">
+                        <p:selectOneMenu value="#{solicitudMb.solicitudDto.idLugarTrabajo}"
+                                         filter="true"
+                                         required="true"
+                                         requiredMessage="Campo obligatorio"
+                                         id="inputLugar"
+                                         panelStyleClass="selectpicker"
+                                         effect="fold">
+                            <f:selectItem itemLabel="Seleccionar un lugar de trabajo*" 
+                                          itemValue="#{null}"/>
+                            <f:selectItems value="#{listaCiudades}"
+                                           var="ciudad"
+                                           itemLabel="#{ciudad.valor}"
+                                           itemValue="#{ciudad.id}"/>
+                        </p:selectOneMenu>
+                        <p:message for="inputLugar  "/>
+                    </h:panelGroup>
+                    <h:panelGroup class="ui-g-12">
+                        <span class="ui-float-label">
+                            <p:inputText value="#{solicitudMb.solicitudDto.cantidadVacantes}"
+                                         size="45"
+                                         required="true"
+                                         requiredMessage="Campo obligatorio"
+                                         id="inputVacantes">
+                                <p:keyFilter regEx="/[\d\-\.]/"/>
+                            </p:inputText>
+                            <p:outputLabel for="@previous" value="Cantidad de vacantes*" />
+                            <p:message for="inputVacantes"/>
+                        </span>
+                    </h:panelGroup>
+                    <h:panelGroup class="ui-g-12">
+                        <span class="ui-float-label">
+                            <p:inputTextarea value="#{solicitudMb.solicitudDto.descripcion}"
+                                             rows="6" 
+                                             required="true"
+                                             requiredMessage="Campo obligatorio"
+                                             id="inputDescripcion"
+                                             cols="75" counter="display" 
+                                             maxlength="300" counterTemplate="{0} Número de caracteres." 
+                                             autoResize="true"/> 
+                            <p:outputLabel for="@previous" value="Descripción*" />
+                            <h:outputText id="display" />
+                            <p:message for="inputDescripcion"/>
+                        </span>
+                    </h:panelGroup>
+                </p:panelGrid>
+                <h:panelGroup class="ui-g-12">
+                    <p:commandButton styleClass="btn btn-danger"
+                                     icon="fa fa-long-arrow-left"
+                                     action="#{solicitudMb.clean()}"
+                                     immediate="true"
+                                     oncomplete="PF('dialogSolicitud').hide()"
+                                     update=":formSolicitud, :formConsultaSolicitud"
+                                     value="Cancelar"/>
+                    <p:commandButton styleClass="btn btn-primary"
+                                     icon="fa fa-check"
+                                     actionListener="#{solicitudMb.guardar()}"
+                                     update="formConsultaSolicitud, panelSolicitud, growl"
+                                     value="Guardar"/>
+                </h:panelGroup>
+            </p:dialog>
+        </h:form>
+
+        <h:form id="formConsultaSolicitud">
+            <p:outputPanel style="text-align: right" rendered="#{loginMb.validarPermiso(PermisoApp.GUARDAR_MODULO_SOLICITUD)}">
+                <p:commandButton value="Nueva solicitud"
+                                 action="#{solicitudMb.cleanNew()}"
+                                 update=":formSolicitud:panelSolicitud"
+                                 oncomplete="PF('dialogSolicitud').show()"
+                                 icon="fa fa-plus-circle" 
+                                 styleClass="btn btn-success">
+                </p:commandButton>
+            </p:outputPanel>
+            <p:panelGrid styleClass="ui-panelgrid-blank ui-fluid">
+                <p:commandButton value="Descargar plantilla excel" 
+                                 rendered="#{loginMb.validarPermiso(PermisoApp.GUARDAR_MODULO_SOLICITUD)}"
+                                 action="#{solicitudMb.descargar()}"
+                                 ajax="false"
+                                 styleClass="btn btn-success">
+                </p:commandButton>
+                <p:fileUpload id="certificacionExperiencia"
+                              rendered="#{loginMb.validarPermiso(PermisoApp.GUARDAR_MODULO_SOLICITUD)}"
+                              listener="#{solicitudMb.uploadFile}"
+                              mode="advanced"
+                              update="formConsultaSolicitud:dataSolicitud, growl"
+                              cancelLabel="cancelar"
+                              label="Subir plantilla"
+                              invalidFileMessage="Debe ser un excel"
+                              uploadLabel="Subir archivo"
+                              auto="true" allowTypes="/(\.|\/)(xlsx)$/" />
+            </p:panelGrid>
+            <p:dataTable value="#{solicitudMb.listaSolicitudes}"
+                         id="dataSolicitud"
+                         paginator="true"
+                         rowKey="#{solicitud.idSOLICITUD}"
+                         filteredValue="#{solicitudMb.filter}"
+                         rows="5"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                         rowsPerPageTemplate="5,10,20"
+                         var="solicitud" 
+                         emptyMessage="No se han encontrado solicitudes">
+                <f:facet name="header">
+                    <div style="float:right;padding-top: 5px;">
+                        <h:commandLink>
+                            <p:graphicImage name="sobresalir.png" library="img" width="24"/>
+                            <p:dataExporter type="xls" target="dataSolicitud" 
+                                            fileName="solicitudes" />
+                        </h:commandLink>
+                    </div>
+
+                </f:facet>
+                <p:column headerText="N° Radicado" 
+                          filterBy="#{solicitud.numeroRadicado}"
+                          sortBy="#{solicitud.numeroRadicado}"
+                          >
+                    <h:outputText value="#{solicitud.numeroRadicado}"/>
+                </p:column>                
+                <p:column headerText="Descripción"
+                          filterBy="#{solicitud.descripcion}"
+                          >
+                    <h:outputText value="#{solicitud.descripcion}"/>
+                </p:column>              
+                <p:column headerText="Cargo">
+                    <h:outputText value="#{solicitud.cargoDto.nombre}"/>
+                </p:column>
+                <p:column headerText="Lugar de trabajo">
+                    <h:outputText value="#{solicitudMb.obtenerLugarTrabajo(solicitud.idLugarTrabajo)}"/>
+                </p:column>
+                <p:column headerText="Cantidad de vacantes"
+                          filterBy="#{solicitud.cantidadVacantes}"
+                          >
+                    <h:outputText value="#{solicitud.cantidadVacantes}"/>
+                </p:column>
+                <p:column headerText="Estado"
+                          filterBy="#{solicitud.estado}">
+                    <h:outputText value="#{solicitud.estado}"/>
+                </p:column>
+                <p:column headerText="Acciones" exportable="false"
+                          rendered="#{loginMb.validarPermiso(PermisoApp.GUARDAR_MODULO_SOLICITUD)}">
+                    <center>
+                        <p:commandButton icon="fa fa-edit"
+                                         action="#{solicitudMb.preEditar(solicitud)}"
+                                         update=":formSolicitud:panelSolicitud"
+                                         styleClass="btn btn-warning"
+                                         oncomplete="PF('dialogSolicitud').show()"
+                                         title="Editar solicitud">
+                        </p:commandButton>
+                        <p:commandButton icon="fa fa-trash" 
+                                         update=":formConsultaSolicitud, growl"
+                                         styleClass="btn btn-danger"
+                                         action="#{solicitudMb.delete(solicitud)}" 
+                                         title="Eliminar solicitud">
+                            <p:confirm header="Confirmation" 
+                                       message="¿Esta seguro de eliminar este registro?" 
+                                       icon="fal fa-exclamation-triangle" />
+                        </p:commandButton>
+                    </center>
+                </p:column>
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="fade" 
+                             hideEffect="fade">
+                <p:commandButton value="Si" type="button"
+                                 styleClass="ui-confirmdialog-yes btn btn-primary" 
+                                 icon="fa fa-check" />
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no btn btn-danger" 
+                                 icon="fa fa-window-close" />
+            </p:confirmDialog>      
+        </h:form>
+    </ui:define>
+</ui:composition>

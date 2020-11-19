@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:form id="formPqr">
+        <p:dialog widgetVar="dialogPqr"
+                  position="center"
+                  responsive="true"
+                  closeOnEscape="false"
+                  closable="false"
+                  resizable="false"
+                  modal="true" draggable="false" dynamic="true"
+                  showEffect="explode" hideEffect="explode">
+            <p:panelGrid id="panelPqr" columns="1" styleClass="ui-panelgrid-blank ui-fluid">
+                <p:column>
+                    <h:panelGroup class="ui-g-12" >
+                        <p:selectOneMenu value="#{pqrMb.pqrDto.tipoPqr}"
+                                         filter="true"
+                                         required="true"
+                                         requiredMessage="Campo obligatorio"
+                                         id="selectCargo"
+                                         panelStyleClass="selectpicker"
+                                         effect="fold">
+                            <f:selectItem itemLabel="Seleccionar PQR*" 
+                                          itemValue="#{null}"/>
+                            <f:selectItems value="#{tipoPqrs}"
+                                           var="cargo"
+                                           itemLabel="#{cargo.valor}"
+                                           itemValue="#{cargo.valor}"/>
+                        </p:selectOneMenu>
+                        <p:message for="selectCargo"/>
+                    </h:panelGroup>
+                </p:column>
+                <p:column>
+                    <h:panelGroup class="ui-g-12">
+                        <span class="ui-float-label">
+                            <p:inputTextarea value="#{pqrMb.pqrDto.descripcion}"
+                                             rows="6" 
+                                             required="true"
+                                             requiredMessage="Campo obligatorio"
+                                             id="inputDescripcion"
+                                             cols="75" counter="display" 
+                                             maxlength="300" counterTemplate="{0} Número de caracteres." 
+                                             autoResize="true"/> 
+                            <p:outputLabel for="@previous" value="Descripción*" />
+                            <h:outputText id="display" />
+                            <p:message for="inputDescripcion"/>
+                        </span>
+                    </h:panelGroup>
+                </p:column>
+            </p:panelGrid>
+            <h:panelGroup class="ui-g-12">
+                <p:commandButton styleClass="btn btn-danger"
+                                 icon="fa fa-long-arrow-left"
+                                 immediate="true"
+                                 onclick="PF('dialogPqr').hide()"
+                                 value="Cancelar"/>
+                <p:commandButton styleClass="btn btn-primary"
+                                 icon="fa fa-save"
+                                 action="#{pqrMb.guardar()}"
+                                 update="formPqr:panelPqr, growl"
+                                 value="Guardar"/>
+            </h:panelGroup>
+        </p:dialog>
+    </h:form>
+</ui:composition>

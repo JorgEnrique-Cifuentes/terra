@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/templates/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+    <ui:define name="content">
+
+        <h:form id="HistorialUsuario">
+            <ul class="breadcrumb">
+                <li><h1>HISTORIAL USUARIO</h1></li>
+            </ul>
+            <p:panel id="HistorialUsuario" rendered="#{!historialUsuario.isForm}"
+                     class="content-center">
+                <p:dataTable value="#{historialUsuario.listaHistorialUsuarioDtos}"
+                             id="historial"
+                             rowKey="#{historial.id}"
+                             paginator="true"
+                             filteredValue="#{historialUsuario.filter}"
+                             rows="5"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                             rowsPerPageTemplate="5,10,20"
+                             var="historial" 
+                             emptyMessage="No se han encontrado registros">
+                    <f:facet name="header">
+                        <div style="float:right;padding-top: 5px;">
+                            <h:commandLink>
+                                <p:graphicImage name="sobresalir.png" library="img" width="24"/>
+                                <p:dataExporter type="xls" target="historial" 
+                                                fileName="RegistroDeUsuarios" />
+                            </h:commandLink>
+                        </div>
+
+                    </f:facet>
+                    <p:column headerText="id" filterBy="#{historial.id}">
+                        <h:outputText value="#{historial.id}"/>
+                    </p:column>                
+                    <p:column headerText="USUARIO" filterBy="#{historial.usuario}">
+                        <h:outputText value="#{historial.usuario}"/>
+                    </p:column>              
+                    <p:column headerText="IDENTIFICACIÓN" filterBy="#{historial.identificacion}">
+                        <h:outputText value="#{historial.identificacion}"/>
+                    </p:column>
+                    <p:column headerText="ROL" filterBy="#{historial.rol}">
+                        <h:outputText value="#{historial.rol}"/>
+                    </p:column>
+                    <p:column headerText="FECHA_INGRESO" filterBy="#{historial.fechaIngreso}">
+                        <h:outputText value="#{historial.fechaIngreso}">
+                         <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="IP_USUARIO" filterBy="#{historial.ipUsuario}">
+                        <h:outputText value="#{historial.ipUsuario}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+             <p:confirmDialog global="true" showEffect="fade" 
+                             hideEffect="fade">
+                <p:commandButton value="Si" type="button"
+                                 styleClass="ui-confirmdialog-yes btn btn-primary" 
+                                 icon="fa fa-check" />
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no btn btn-danger" 
+                                 icon="fa fa-window-close" />
+            </p:confirmDialog>  
+        </h:form>
+
+        
+    </ui:define>
+</ui:composition>

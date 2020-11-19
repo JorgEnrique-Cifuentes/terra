@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/templates/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+
+    <ui:define name="content">
+        <p:panel>
+            <ul class="breadcrumb">
+                <li><h1>SOFTWARE DE GESTIÓN HUMANA</h1></li>
+            </ul>
+            <p:tabView id="viewTab"
+                       effect="fold"
+                       activeIndex="#{tabViewControl.activeIndex}"
+                       dynamic="true"
+                       cache="false">
+                <p:ajax event="tabChange"
+                        listener="#{tabViewControl.onTabChange}" 
+                        process="@this"/>
+                <p:tab rendered="#{loginMb.validarPermiso(PermisoApp.VER_MODULO_PQR)}">
+                    <f:facet name="title">
+                        <h:outputText id="seguimientoTool" value="Seguimiento de PQR"/>
+                        <span class="badge">#{seguimientoPqrMb.count}</span>
+                        <p:tooltip  for="seguimientoTool" value="Tienes (#{seguimientoPqrMb.count}) Pqr en estado Abierto" 
+                                    trackMouse="true" />
+                    </f:facet>
+                    <ui:include src="seguimiento_pqr.xhtml"/>
+                </p:tab>
+                <p:tab title="Reporte">
+                    <ui:include src="reporte.xhtml"/>
+                </p:tab>
+            </p:tabView>
+        </p:panel>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,41 @@
+<pretty-config xmlns="http://ocpsoft.org/prettyfaces/3.3.3"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://ocpsoft.org/prettyfaces/3.3.3
+      http://ocpsoft.org/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.3.3.xsd">
+
+    <url-mapping id="login">
+        <pattern value="/login" />
+        <view-id value="/login.xhtml" />
+    </url-mapping>
+    
+     <url-mapping id="resetPassword">
+        <pattern value="/resetPassword" />
+        <view-id value="/reset_password.xhtml" />
+    </url-mapping>
+    
+    <url-mapping id="home">
+        <pattern value="/home" />
+        <view-id value="/pages/home/home.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="contratacion">
+        <pattern value="/contratacion" />
+        <view-id value="/pages/contratacion/contratacion.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="curriculum">
+        <pattern value="/curriculum" />
+        <view-id value="/pages/hoja_de_vida/hoja_de_vida.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="solicitud">
+        <pattern value="/solicitud" />
+        <view-id value="/pages/solicitudes/solicitudes.xhtml" />
+    </url-mapping>
+    
+    <url-mapping id="historialUsuario">
+        <pattern value="/historialUsuario" />
+        <view-id value="/pages/historial_usuario/historial_usuario.xhtml" />
+    </url-mapping>
+
+</pretty-config>

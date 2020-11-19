@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:form id="formConsultaSolicitud">
+        <p:panel id="consultarSolicitud" class="content-center" 
+                 visible="#{!seguimientoPqrMb.isForm}">
+            <p:dataTable value="#{seguimientoPqrMb.listaPqrDto}"
+                         id="dataSolicitud"
+                         rowStyleClass="#{solicitud.estado eq EstadoPqr.ABIERTO ? 'old' : null}"
+                         paginator="true"
+                         rowKey="#{solicitud.idPQR}"
+                         rows="5"
+                         filteredValue="#{seguimientoPqrMb.filter}"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                         rowsPerPageTemplate="5,20"
+                         var="solicitud" 
+                         emptyMessage="No se han encontrado pqrs">
+                <f:facet name="header">
+                    <div style="float:right;padding-top: 5px;">
+                        <h:commandLink>
+                            <p:graphicImage name="sobresalir.png" library="img" width="24"/>
+                            <p:dataExporter type="xls" target="dataSolicitud" 
+                                            fileName="Pqrs" />
+                        </h:commandLink>
+                    </div>
+
+                </f:facet>
+                <p:column headerText="N° Radicado" 
+                          filterBy="#{solicitud.numeroRadicado}"
+                          sortBy="#{solicitud.numeroRadicado}"
+                          >
+                    <h:outputText value="#{solicitud.numeroRadicado}"/>
+                </p:column>  
+                <p:column headerText="Nombre completo">
+                    <h:outputText value="#{solicitud.nombreCompleto}"/>
+                </p:column>
+                <p:column headerText="Cédula">
+                    <h:outputText value="#{solicitud.cedula}"/>
+                </p:column>
+                <p:column headerText="Tipos de PQR" filterBy="#{solicitud.tipoPqr}">
+                    <h:outputText value="#{solicitud.tipoPqr}"/>
+                </p:column>   
+                <p:column headerText="Descripción" filterBy="#{solicitud.descripcion}">
+                    <h:outputText value="#{solicitud.descripcion}"/>
+                </p:column> 
+                <p:column headerText="Estado" filterBy="#{solicitud.estado.descripcion}">
+                    <h:outputText value="#{solicitud.estado.descripcion}"/>
+                </p:column> 
+                <p:column headerText="Acciones" 
+                          rendered="#{loginMb.validarPermiso(PermisoApp.CONSULTAR_PQR_TODAS)}"
+                          exportable="false"
+                          >
+                    <center>
+                        <p:commandButton value="Cerrar PQR"
+                                         oncomplete="PF('dialogPqrObs').show()"
+                                         title="Cerrar Pqr"
+                                         action="#{seguimientoPqrMb.preClose(solicitud)}"
+                                         rendered="#{solicitud.estado eq EstadoPqr.ABIERTO}"
+                                         class="btn btn-primary"/>
+                        <h:outputText value="Esta solicitud ya fue cerrada"
+                                      rendered="#{solicitud.estado eq EstadoPqr.CERRADO}"/>
+                    </center>
+                </p:column> 
+            </p:dataTable> 
+        </p:panel>
+        <p:confirmDialog global="true" showEffect="fade" 
+                             hideEffect="fade">
+                <p:commandButton value="Si" type="button"
+                                 styleClass="ui-confirmdialog-yes btn btn-primary" 
+                                 icon="fa fa-check" />
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no btn btn-danger" 
+                                 icon="fa fa-window-close" />
+            </p:confirmDialog>      
+    </h:form>
+
+    <p:dialog widgetVar="dialogPqrObs"
+              position="center"
+              header="Cerrar Pqr"
+              responsive="true"
+              closeOnEscape="true"
+              resizable="false"
+              draggable="false" dynamic="true"
+              showEffect="explode" hideEffect="explode">
+        <h:form id="formPqrObs">
+            <p:panelGrid id="panelPqr" 
+                         columns="1" styleClass="ui-panelgrid-blank ui-fluid">
+                <p:column>
+                    <h:panelGroup class="ui-g-12">
+                        <span class="ui-float-label">
+                            <p:inputTextarea value="#{seguimientoPqrMb.observacion}"
+                                             rows="6" 
+                                             id="inputDescripcion"
+                                             cols="75" counter="display" 
+                                             maxlength="300" counterTemplate="{0} Número de caracteres." 
+                                             autoResize="true"/> 
+                            <p:outputLabel for="@previous" value="Descripción" />
+                            <h:outputText id="display" />
+                            <p:message for="inputDescripcion"/>
+                        </span>
+                    </h:panelGroup>
+                </p:column>
+            </p:panelGrid>
+            <h:panelGroup class="ui-g-12">
+                <p:commandButton styleClass="btn btn-danger"
+                                 icon="fa fa-long-arrow-left"
+                                 immediate="true"
+                                 onclick="PF('dialogPqrObs').hide()"
+                                 value="Cancelar"/>
+                <p:commandButton styleClass="btn btn-primary"
+                                 icon="fa fa-save"
+                                 action="#{seguimientoPqrMb.cerrarPqr()}"
+                                 update="viewTab:formConsultaSolicitud, viewTab:formPqrObs, growl"
+                                 value="Cerrar Pqr"/>
+            </h:panelGroup>
+        </h:form>
+    </p:dialog>
+</ui:composition>

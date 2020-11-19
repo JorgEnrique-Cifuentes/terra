@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <title>#{general['image']}</title>
+
+
+
+        <h:outputStylesheet library="css" name="general.css"/>    
+    </h:head>
+
+    <h:body>
+
+        <p:importEnum type="com.sena.terra.utility.PermisoApp"
+                      var="PermisoApp" />
+
+        <p:importEnum type="com.sena.terra.utility.EstadoPqr"
+                      var="EstadoPqr" />
+
+        <div class="wrapper">
+            <!-- Sidebar  -->
+            <nav id="sidebar">
+                <div class="sidebar-header">
+                    <h3>#{general['image']}</h3>
+                    <strong>#{general['name.app.abrev']}</strong>
+                </div>
+                <ul class="list-unstyled components">
+                    <hr class="line" />
+                    <li>
+                        <a href="home">
+                            <i><p:graphicImage 
+                                    height="40"
+                                    width="40"
+                                    name="casa.png" 
+                                    library="img"/></i>
+                                #{general['menu.home']}
+                        </a>
+                    </li>
+                    <h:panelGroup rendered="#{loginMb.validarPermiso(PermisoApp.VER_MODULO_SOLICITUD)}">
+                        <li>
+                            <a href="solicitud">
+                                <i><p:graphicImage 
+                                        height="40"
+                                        width="40"
+                                        name="curriculum.png" 
+                                        library="img"/></i>
+                                    #{general['menu.solicitud']}
+                            </a>
+                        </li>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{loginMb.validarPermiso(PermisoApp.VER_MODULO_HV)}">
+                        <li>
+                            <a href="curriculum">
+                                <i><p:graphicImage 
+                                        height="40"
+                                        width="40"
+                                        name="buscar.png" 
+                                        library="img"/></i>
+                                    #{general['menu.hojas.vida']}
+                            </a>
+                        </li>
+                    </h:panelGroup>
+                   
+                    <h:panelGroup rendered="#{loginMb.validarPermiso(PermisoApp.VER_MODULO_CONTRATACION)}">
+                        <li>
+                            <a href="contratacion">
+                                <i><p:graphicImage 
+                                        height="40"
+                                        width="40"
+                                        name="contratacion.png" 
+                                        library="img"/></i>
+                                    #{general['menu.contratacion']}
+                            </a>
+                        </li>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{loginMb.validarPermiso(PermisoApp.VER_MODULO_HISTORIAL_USUARIO)}">
+                        <li>
+                            <a href="historialUsuario">
+                                <i><p:graphicImage 
+                                        height="40"
+                                        width="40"
+                                        name="historial.png" 
+                                        library="img"/></i>
+                                    #{general['menu.historial.usuario']}
+                            </a>
+                        </li>
+                    </h:panelGroup>
+                </ul>
+
+                <center>   
+                    <ul class="list-unstyled components">
+                        <hr class="line" />
+                        <li>
+                            <div>#{loginMb.loginDto.empleadoDto.primerNombre
+                                   .concat(' ').concat(loginMb.loginDto.empleadoDto
+                                   .primerApellido)}</div>
+                        </li>
+                        <li>
+                            <div>#{loginMb.loginDto.empleadoDto.numeroDocumento}</div>
+                        </li>
+                        <li>
+                            <div>#{loginMb.loginDto.empleadoDto.cargo}</div>
+                        </li>
+                    </ul>
+                    <h:form>
+                        <p:commandButton  styleClass="btn btn-danger"
+                                          action="#{loginMb.cerrarSesion()}"
+                                          icon="fa fa-sign-out"
+                                          title="Cerrar sesión">
+                            <p:confirm header="Confirmación" 
+                                       message="¿Esta seguro de cerrar sesion?" 
+                                       icon="fa fa-exclamation-triangle"/>
+                        </p:commandButton>
+                    </h:form>
+                </center>
+
+            </nav>
+
+            <!-- Page Content  -->
+            <div id="content">
+
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <div class="container-fluid">
+
+                        <div onclick="changeSidebar()" class="btn" id="sidebarCollapse" >
+                            <i class="fa fa-bars fa-lg"></i>
+                        </div>
+
+                    </div>
+                </nav>
+
+                <div>
+                    <p:growl id="growl"
+                             rendered="#{!facesContext.validationFailed}"
+                             showDetail="true"
+                             />
+
+                    <ui:insert name="content"/>
+                </div>
+
+                <div>
+                    <h:form>
+                        <p:stack icon="/resources/img/caja-vacia.svg" expanded="false">
+                            <p:menuitem value="PQR" icon="/resources/img/charla.svg"
+                                        oncomplete="PF('dialogPqr').show()"
+                                        rendered="#{loginMb.validarPermiso(PermisoApp.VER_MODULO_PQR)}"/>
+                            <p:menuitem value="Certificaciones" icon="/resources/img/papel.svg" 
+                                        oncomplete="PF('dialogCertificaciones').show()"/>
+                        </p:stack>
+                    </h:form>
+                </div>
+            </div>
+
+        </div>
+
+        <ui:include src="../../pages/home/certificado.xhtml"/>
+        <ui:include src="../../pages/home/pqr.xhtml"/>
+
+        <!-- Bootstrap JS -->
+        <h:outputScript name="general.js" library="js"/>
+        <h:outputScript library="js" name="pdfmake.min.js" />
+        <h:outputScript library="js" name="vfs_fonts.js" />
+    </h:body>
+</ui:composition>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:form id="formCertificado">
+        <p:dialog widgetVar="dialogCertificaciones"
+                  position="center"
+                  responsive="true"
+                  closeOnEscape="true"
+                  resizable="false"
+                  modal="true" draggable="false" dynamic="true"
+                  showEffect="explode" hideEffect="explode">
+            <center>
+                <p:commandButton value="Generar certificación laboral" 
+                                 title="Generar certificación laboral"
+                                 ajax="false"
+                                 onclick="PrimeFaces.monitorDownload(startHandler(), endHandler());"
+                                 icon="fa fa-file-pdf-o"
+                                 styleClass="btn btn-danger"
+                                 action="#{cerficadoMb.generarCertificado()}"/>
+            </center>
+        </p:dialog>
+    </h:form>
+</ui:composition>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/templates/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+    <ui:define name="content">
+        <h:form id="formContratacion">
+            <ul class="breadcrumb">
+                <li><h1>CONTRATACIÓN</h1></li>
+            </ul>
+         <p:commandButton value="Nueva contratacion"
+                             update=":formContratacion, :formConsultaContratacion"
+                             immediate="true"
+                             action="#{contratacionMb.cleanNew()}"
+                             rendered="#{!contratacionMb.isForm}"
+                             icon="fa fa-check" styleClass="btn btn-primary">
+            </p:commandButton>
+            <p:panel id="panelSolicitud" class="content-center" visible="#{contratacionMb.isForm}">
+                <h:panelGroup class="ui-g-6" rendered="#{contratacionMb.contratacionDto.idCONTRATACION eq null}">
+                    <p:selectOneMenu value="#{contratacionMb.contratacionDto.cargoDto}"
+                                     filter="true"
+                                     required="true"
+                                     converter="omnifaces.SelectItemsConverter" 
+                                     requiredMessage="Campo obligatorio"
+                                     id="selectCargo"
+                                     panelStyleClass="selectpicker"
+                                     effect="fold">
+                        <f:selectItem itemLabel="Seleccionar un cargo*" 
+                                      itemValue="#{null}"/>
+                        <f:selectItems value="#{contratacionMb.listaCargos}"
+                                       var="cargo"
+                                       itemLabel="#{cargo.nombre}"
+                                       itemValue="#{cargo}"/>
+                    </p:selectOneMenu>
+                    <p:message for="selectCargo"/>
+                </h:panelGroup>
+                <h:panelGroup class="ui-g-6" rendered="#{contratacionMb.contratacionDto.idCONTRATACION ne null}">
+                    <span class="ui-float-label">
+                        <p:inputText value="#{contratacionMb.contratacionDto.cargoDto.nombre}"
+                                     size="45" disabled="true"
+                                     id="inputCargo"/>
+                        <p:outputLabel for="@previous" value="Cargo*" />
+                    </span>
+                </h:panelGroup>
+
+                <h:panelGroup class="ui-g-6">
+                    <p:selectOneMenu value="#{contratacionMb.contratacionDto.lugarTrabajo}"
+                                     filter="true"
+                                     required="true"
+                                     requiredMessage="Campo obligatorio"
+                                     id="inputLugar"
+                                     panelStyleClass="selectpicker"
+                                     effect="fold">
+                        <f:selectItem itemLabel="Seleccionar un lugar de trabajo*" 
+                                      itemValue="#{null}"/>
+                        <f:selectItems value="#{listaCiudades}"
+                                       var="ciudad"
+                                       itemLabel="#{ciudad.valor}"
+                                       itemValue="#{ciudad.valor}"/>
+                    </p:selectOneMenu>
+                </h:panelGroup>
+                <h:panelGroup class="ui-g-6">
+                    <span class="ui-float-label">
+                        <p:inputText value="#{contratacionMb.contratacionDto.cantidadVacantes}"
+                                     size="45"
+                                     required="true"
+                                     requiredMessage="Campo obligatorio"
+                                     id="inputVacantes">
+                            <p:keyFilter regEx="/[\d\-\.]/"/>
+                        </p:inputText>
+                        <p:outputLabel for="@previous" value="Cantidad de vacantes*" />
+                        <p:message for="inputVacantes"/>
+                    </span>
+                </h:panelGroup>
+                <h:panelGroup class="ui-g-6">
+                    <span class="ui-float-label">
+                        <p:inputTextarea value="#{contratacionMb.contratacionDto.descripcion}"
+                                         rows="6" 
+                                         required="true"
+                                         requiredMessage="Campo obligatorio"
+                                         id="inputDescripcion"
+                                         cols="75" counter="display" 
+                                         maxlength="300" counterTemplate="{0} Número de caracteres." 
+                                         autoResize="true"/> 
+                        <p:outputLabel for="@previous" value="Descripción*" />
+                        <h:outputText id="display" />
+                        <p:message for="inputDescripcion"/>
+                    </span>
+                </h:panelGroup>
+                <h:panelGroup class="ui-g-12">
+                    <p:commandButton styleClass="btn btn-danger"
+                                     icon="fa fa-long-arrow-left"
+                                     action="#{contratacionMb.clean()}"
+                                     immediate="true"
+                                     update=":formContratacion, :formConsultaContratacion"
+                                     value="Cancelar"/>
+                    <p:commandButton styleClass="btn btn-primary"
+                                     icon="fa fa-save"
+                                     action="#{contratacionMb.guardar()}"
+                                     update=":formContratacion, :formConsultaContratacion, growl"
+                                     value="Guardar"/>
+                </h:panelGroup>
+            </p:panel>
+        </h:form>
+
+        <h:form id="formConsultaContratacion">
+            <p:panel id="consultarContratacion" class="content-center" 
+                     visible="#{!contratacionMb.isForm}">
+                <p:dataTable value="#{contratacionMb.listaContratacion}"
+                             id="dataContratacion"
+                             paginator="true"
+                             rowKey="#{contratacion.idCONTRATACION}"
+                             filteredValue="#{contratacionMb.filter}"
+                             rows="5"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                             rowsPerPageTemplate="5,10,20"
+                             var="contratacion" 
+                             emptyMessage="No se han encontrado contrataciones">
+                    <f:facet name="header">
+                        <div style="float:right;padding-top: 5px;">
+                            <h:commandLink>
+                                <p:graphicImage name="sobresalir.png" library="img" width="24"/>
+                                <p:dataExporter type="xls" target="dataContratacion" 
+                                                fileName="contratacion" />
+                            </h:commandLink>
+                        </div>
+
+                    </f:facet>
+                    <p:column headerText="N° Radicado" 
+                              filterBy="#{contratacion.numeroRadicado}"
+                              sortBy="#{contratacion.numeroRadicado}"
+                              >
+                        <h:outputText value="#{contratacion.numeroRadicado}"/>
+                    </p:column>                
+                    <p:column headerText="Descripción"
+                              filterBy="#{contratacion.descripcion}"
+                              >
+                        <h:outputText value="#{contratacion.descripcion}"/>
+                    </p:column>              
+                    <p:column headerText="Cargo">
+                        <h:outputText value="#{contratacion.cargoDto.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Lugar de trabajo"
+                              filterBy="#{contratacion.lugarTrabajo}">
+                        <h:outputText value="#{contratacion.lugarTrabajo}"/>
+                    </p:column>
+                    <p:column headerText="Cantidad de vacantes"
+                              filterBy="#{contratacion.cantidadVacantes}"
+                              >
+                        <h:outputText value="#{contratacion.cantidadVacantes}"/>
+                    </p:column>
+                    <p:column headerText="Estado"
+                              filterBy="#{contratacion.estado}">
+                        <h:outputText value="#{contratacion.estado}"/>
+                    </p:column>
+                    <p:column headerText="Acciones" exportable="false">
+                        <center>
+                            <p:commandButton icon="fa fa-edit"
+                                             action="#{contratacionMb.preEditar(contratacion)}"
+                                             update=":formContratacion, :formConsultaContratacion"
+                                             title="Editar contratacion">
+                            </p:commandButton>
+                            <p:commandButton icon="fa fa-trash" 
+                                             update=":formContratacion, :formConsultaContratacion, growl"
+                                             action="#{contratacionMb.delete(contratacion)}" 
+                                             title="Eliminar contratacion">
+                                <p:confirm header="Confirmation" 
+                                           message="¿Esta seguro de eliminar este registro?" 
+                                           icon="fal fa-exclamation-triangle" />
+                            </p:commandButton>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+            <p:confirmDialog global="true" showEffect="fade" 
+                             hideEffect="fade">
+                <p:commandButton value="Si" type="button"
+                                 styleClass="ui-confirmdialog-yes btn btn-primary" 
+                                 icon="fa fa-check" />
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no btn btn-danger" 
+                                 icon="fa fa-window-close" />
+            </p:confirmDialog>  
+        </h:form>
+    </ui:define>
+</ui:composition>

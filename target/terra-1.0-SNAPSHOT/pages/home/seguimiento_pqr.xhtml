@@ -42,7 +42,7 @@
                 <p:column headerText="Cédula">
                     <h:outputText value="#{solicitud.cedula}"/>
                 </p:column>
-                <p:column headerText="Tipos de PQR" filterBy="#{solicitud.tipoPqr}">
+                <p:column headerText="Tipos de PCC" filterBy="#{solicitud.tipoPqr}">
                     <h:outputText value="#{solicitud.tipoPqr}"/>
                 </p:column>   
                 <p:column headerText="Descripción" filterBy="#{solicitud.descripcion}">
@@ -56,9 +56,9 @@
                           exportable="false"
                           >
                     <center>
-                        <p:commandButton value="Cerrar PQR"
+                        <p:commandButton value="Cerrar PCC"
                                          oncomplete="PF('dialogPqrObs').show()"
-                                         title="Cerrar Pqr"
+                                         title="Cerrar PCC"
                                          action="#{seguimientoPqrMb.preClose(solicitud)}"
                                          rendered="#{solicitud.estado eq EstadoPqr.ABIERTO}"
                                          class="btn btn-primary"/>
@@ -81,7 +81,7 @@
 
     <p:dialog widgetVar="dialogPqrObs"
               position="center"
-              header="Cerrar Pqr"
+              header="Cerrar PCC"
               responsive="true"
               closeOnEscape="true"
               resizable="false"

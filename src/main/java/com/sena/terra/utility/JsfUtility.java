@@ -88,7 +88,7 @@ public class JsfUtility {
         try {
             System.out.println(".....................................................................................................");
             System.out.println(((HttpServletRequest) ec.getRequest()).getRequestURL());
-            ec.redirect("http://localhost:8080/terra/curriculum");
+            ec.redirect("http://terratalent.herokuapp.com/terra/curriculum");
         } catch (IOException e) {
             System.err.print("Error al recargar la página " + e.getMessage());
         }

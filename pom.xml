@@ -5,7 +5,6 @@
     <groupId>com.sena.terra</groupId>
     <artifactId>terra</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
 
     <name>terra</name>
 

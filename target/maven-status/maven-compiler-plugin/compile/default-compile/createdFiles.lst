@@ -47,6 +47,7 @@ com\sena\terra\utility\TabViewController.class
 com\sena\terra\bean\PqrMb.class
 com\sena\terra\config\LoadTerraConfig.class
 com\sena\terra\dto\FileCertificationDto.class
+com\sena\terra\bean\PsicologicsMb.class
 com\sena\terra\entity\PruebasPsicotecnicas.class
 com\sena\terra\conversor\SolicitudConversor.class
 com\sena\terra\dto\HistorialUsuarioDto.class

@@ -70,11 +70,25 @@ public class JsfUtility {
     public static void updateComponent(final String id) {
         PrimeFaces.current().ajax().update(id);
     }
-
+    
     public static void reloadPage() {
         final ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         try {
+            System.out.println(".....................................................................................................");
+            System.out.println(((HttpServletRequest) ec.getRequest()).getRequestURL());
             ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+        } catch (IOException e) {
+            System.err.print("Error al recargar la página " + e.getMessage());
+        }
+
+    }
+    
+    public static void reloadPageCurriculum() {
+        final ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        try {
+            System.out.println(".....................................................................................................");
+            System.out.println(((HttpServletRequest) ec.getRequest()).getRequestURL());
+            ec.redirect("http://localhost:8080/terra/curriculum");
         } catch (IOException e) {
             System.err.print("Error al recargar la página " + e.getMessage());
         }

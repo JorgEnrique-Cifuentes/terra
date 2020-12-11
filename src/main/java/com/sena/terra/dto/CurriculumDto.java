@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.sena.terra.dto;
 
 import java.util.List;
@@ -26,6 +21,7 @@ public class CurriculumDto {
     private String profesion;
     private String puntaje;
     private Integer idCiudad;
+    private String estado;
     private List<EstudiosRealizadosDto> listaEstudiosRealizados;
     private List<ExperienciaLaboralDto> listaExperienciaLaboral;
     private String APROBADO;
@@ -219,8 +215,8 @@ public class CurriculumDto {
     public void setPuntaje(String puntaje) {
         this.puntaje = puntaje;
     }
-    
-     /**
+
+    /**
      * @return the idCiudad
      */
     public Integer getIdCiudad() {
@@ -234,13 +230,22 @@ public class CurriculumDto {
         this.idCiudad = idCiudad;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     /**
      * @param listaExperienciaLaboral the listaExperienciaLaboral to set
      */
     public void setListaExperienciaLaboral(List<ExperienciaLaboralDto> listaExperienciaLaboral) {
         this.listaExperienciaLaboral = listaExperienciaLaboral;
     }
-public String getAPROBADO() {
+
+    public String getAPROBADO() {
         return APROBADO;
     }
 

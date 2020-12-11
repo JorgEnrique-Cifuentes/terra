@@ -19,7 +19,8 @@ public enum PermisoApp {
     VER_MODULO_DESPRENDIBLE("Acceder al modulo de desprendible"),
     CONSULTAR_PQR_TODAS("Consultar las todas las pqr"),
     VER_MODULO_HISTORIAL_USUARIO("Ver historial de usuario"),
-    GUARDAR_MODULO_SOLICITUD("Guardar modulo solicitud");
+    GUARDAR_MODULO_SOLICITUD("Guardar modulo solicitud"),
+    VER_MODULO_PSICOTECNICAS("Acceder al modulo de pruebas psicotecnicas");
 
     PermisoApp(final String descripcion) {
         this.descripcion = descripcion;

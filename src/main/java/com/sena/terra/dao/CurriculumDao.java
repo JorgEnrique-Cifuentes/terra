@@ -55,6 +55,8 @@ public class CurriculumDao implements ICurriculumDao {
                 + curriculumDto.getListaExperienciaLaboral().size()) * 100;
         hojasDeVida.setPuntaje(String.valueOf(puntaje));
         if (hojasDeVida.getIdAspirante() == 0) {
+            System.out.println("Pasa por Dao hoja de vida >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+             hojasDeVida.setEstado("NUEVA");
             hojasDeVidaFacade.create(hojasDeVida);
         } else {
             hojasDeVidaFacade.edit(hojasDeVida);

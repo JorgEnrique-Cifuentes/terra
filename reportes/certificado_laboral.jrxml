@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="certificado_laboral" pageWidth="650" pageHeight="980" columnWidth="610" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b9e5dd1-eb03-4eda-abba-1cbee2f7a572">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="nombre" class="java.lang.String"/>
+	<parameter name="tipoDocumento" class="java.lang.String"/>
+	<parameter name="numeroDocumento" class="java.lang.String"/>
+	<parameter name="fechaInicio" class="java.lang.String"/>
+	<parameter name="fechaFinal" class="java.lang.String"/>
+	<parameter name="cargo" class="java.lang.String"/>
+	<parameter name="fechaActual" class="java.lang.String"/>
+	<parameter name="logoHeaderLeft" class="java.lang.String"/>
+	<parameter name="logoHeaderRight" class="java.lang.String"/>
+	<parameter name="firma" class="java.lang.String"/>
+	<parameter name="sello" class="java.lang.String"/>
+	<parameter name="footer" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="225" splitType="Stretch">
+			<staticText>
+				<reportElement x="170" y="126" width="310" height="30" uuid="577368e6-2186-418e-870a-af8880e33d3b"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LA EMPRESA EQUIPOS Y TERRATEST S.A.S]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="210" y="176" width="240" height="30" uuid="1e803eb3-a36d-48e7-bce3-ebd2e76e8787"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CERTIFICA QUE:
+]]></text>
+			</staticText>
+			<image>
+				<reportElement x="20" y="10" width="150" height="110" uuid="0999c469-df68-429d-9cb4-cf852b4bc7d3"/>
+				<imageExpression><![CDATA[$P{logoHeaderLeft}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="490" y="10" width="110" height="110" uuid="8855a3b4-dbdb-46de-ba07-7805ecce0674">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{logoHeaderRight}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="700" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout"/>
+			<textField>
+				<reportElement x="103" y="0" width="430" height="70" uuid="5cb4a9a1-6a05-4085-a7a7-74d18a56bb50"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["El señor (a) " + $P{nombre} + " identificado (a) con " + $P{tipoDocumento} + "No " + $P{numeroDocumento} + " laboro en la empresa mediante un contrato laboral contratada desde el día " + $P{fechaInicio} + " hasta el día " + $P{fechaFinal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="103" y="70" width="430" height="30" uuid="716538fd-a2a2-4ccf-bef8-2c925ca6b6df"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Que el cargo desempeñado como " + $P{cargo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="103" y="100" width="430" height="50" uuid="68d23181-a186-4bfb-990e-e3245ee48e76"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["La presente certificación se expide del interesado en la ciudad de Bogotá D.C " + $P{fechaActual}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="103" y="174" width="100" height="30" uuid="88148f59-66c8-46aa-8b64-c5115bd2d0df"/>
+				<textFieldExpression><![CDATA["Cordialmente, "]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="103" y="214" width="160" height="120" uuid="35ea9d5f-e3f4-44bc-bf3b-043018e7e095"/>
+				<imageExpression><![CDATA[$P{firma}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="103" y="336" width="230" height="30" uuid="1c160151-e94c-4815-bf2e-ff8686e3e0a7"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAMILO ANDRES TERAN C.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="103" y="396" width="230" height="30" uuid="5188fdf4-51c1-4516-a1be-f78b15ee271a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cel. 3164326481]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="103" y="366" width="230" height="30" uuid="4e6a84c0-3658-4bd8-81b2-47b3aac6e0af"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cordinador de Gestón Humana]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="103" y="426" width="330" height="30" uuid="1eee01d3-9893-4a3f-b3f0-6070cd7c93d1"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Email: recursoshumanos@equiposyterratest.com]]></text>
+			</staticText>
+			<image>
+				<reportElement x="271" y="210" width="216" height="80" uuid="02d482ef-7cd2-4ca0-8232-d26b5e071729"/>
+				<imageExpression><![CDATA[$P{sello}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="0" y="550" width="610" height="50" uuid="24237ec7-aa10-4570-a40e-bbb8bb95e14d"/>
+			</image>
+		</band>
+	</detail>
+</jasperReport>

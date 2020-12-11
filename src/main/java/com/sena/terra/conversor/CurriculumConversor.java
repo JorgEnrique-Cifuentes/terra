@@ -35,6 +35,7 @@ public class CurriculumConversor {
             curriculumDto.setTipoDocumento(hojasDeVida.getTipoDocumento());
             curriculumDto.setPuntaje(hojasDeVida.getPuntaje());
             curriculumDto.setIdCiudad(hojasDeVida.getIdCiudad());
+            curriculumDto.setEstado(hojasDeVida.getEstado());
             curriculumDto.setListaEstudiosRealizados(EstudiosRealizadosConversor
                     .listaEstudiosReaFromEntity(hojasDeVida.getEstudiosRealizadosList(), hojasDeVida.getNumeroDocumento()));
             curriculumDto.setListaExperienciaLaboral(ExperienciaLaboralConversor
@@ -61,6 +62,7 @@ public class CurriculumConversor {
             hojasDeVida.setTipoDocumento(curriculumDto.getTipoDocumento());
             hojasDeVida.setPuntaje(curriculumDto.getPuntaje());
             hojasDeVida.setIdCiudad(curriculumDto.getIdCiudad());
+            hojasDeVida.setEstado(curriculumDto.getEstado());
             hojasDeVida.setEstudiosRealizadosList(EstudiosRealizadosConversor
                     .listaEstudiosReaFromDto(curriculumDto.getListaEstudiosRealizados()));
             hojasDeVida.setExperienciaLaboralList(ExperienciaLaboralConversor

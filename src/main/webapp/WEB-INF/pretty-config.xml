@@ -37,5 +37,9 @@
         <pattern value="/historialUsuario" />
         <view-id value="/pages/historial_usuario/historial_usuario.xhtml" />
     </url-mapping>
-
+    
+    <url-mapping id="psicotecnicas">
+        <pattern value="/psicotecnicas" />
+        <view-id value="/pages/psicotecnicas/psicotecnicas.xhtml" />
+    </url-mapping>
 </pretty-config>

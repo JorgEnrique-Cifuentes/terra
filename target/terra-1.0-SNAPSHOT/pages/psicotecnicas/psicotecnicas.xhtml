@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/templates/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+    <ui:define name="content">
+
+        <h:form id="QueryHojaVida">
+            <ul class="breadcrumb">
+                <li><h1>PRUEBAS PSICOTÉCNICAS</h1></li>
+            </ul>
+
+            <br></br>
+
+            <p:dataTable value="#{curriculumMb.listaCurriculumsFilter}"
+                         id="curriculum"
+                         rowKey="#{curriculum.idAspirante}"
+                         paginator="true"
+                         selection="#{curriculumMb.curriculumSeleccionados}"
+                         rows="5"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                         rowsPerPageTemplate="5,10,20"
+                         var="curriculum" 
+                         emptyMessage="No se han encontrado hojas de vida">
+                <f:facet name="header">
+                    <div style="float:right;padding-top: 5px;">
+                        <h:commandLink>
+                            <p:graphicImage name="sobresalir.png" library="img" width="24"/>
+                            <p:dataExporter type="xls" target="curriculum" 
+                                            fileName="HojasDeVida"/>
+                        </h:commandLink> 
+                    </div>
+                </f:facet>
+                <p:column headerText="Id Asp." filterBy="#{curriculum.idAspirante}">
+                    <h:outputText value="#{curriculum.idAspirante}"/>
+                </p:column>
+                <p:column headerText="N° identificación" filterBy="#{curriculum.numeroDocumento}">
+                    <h:outputText value="#{curriculum.numeroDocumento}"/>
+                </p:column>              
+                <p:column headerText="Primer nombre" filterBy="#{curriculum.primerNombre}">
+                    <h:outputText value="#{curriculum.primerNombre}"/>
+                </p:column>
+                <p:column headerText="Segundo nombre" filterBy="#{curriculum.segundoNombre}">
+                    <h:outputText value="#{curriculum.segundoNombre}"/>
+                </p:column>
+                <p:column headerText="Primer apellido" filterBy="#{curriculum.primerApellido}">
+                    <h:outputText value="#{curriculum.primerApellido}"/>
+                </p:column>
+                <p:column headerText="Segundo apellido" filterBy="#{curriculum.segundoApellido}">
+                    <h:outputText value="#{curriculum.segundoApellido}"/>
+                </p:column>
+                <p:column headerText="Dirección" filterBy="#{curriculum.direccion}">
+                    <h:outputText value="#{curriculum.direccion}"/>
+                </p:column>
+                <p:column headerText="Teléfono" filterBy="#{curriculum.telefono}">
+                    <h:outputText value="#{curriculum.telefono}"/>
+                </p:column>
+                <p:column headerText="Profesión" filterBy="#{curriculum.profesion}">
+                    <h:outputText value="#{curriculum.profesion}"/>
+                </p:column>
+                <p:column headerText="Estado" filterBy="#{curriculum.estado}">
+                    <h:outputText value="#{curriculum.estado}"/>
+            </p:column>
+                <p:column headerText="APROBADO" selectionMode="multiple" style="text-align:center" />
+                <p:column headerText="OBSERVACIONES" filterBy="#{curriculum.estado}">
+                    <h:inputTextarea cols="15"/>
+                </p:column>
+
+            </p:dataTable>
+                
+              <p:spacer width="10" 
+                          height="10"/>
+              <h:panelGroup class="ui-g-12">
+                    <p:commandButton value="Cargar"
+                                     icon="fa fa-spinner"
+                                     styleClass="btn btn-primary"
+                                     action="#{curriculumMb.cargar()}" 
+                                     update=" QueryHojaVida growl"/>
+               </h:panelGroup>    
+        </h:form>      
+    </ui:define>
+</ui:composition>

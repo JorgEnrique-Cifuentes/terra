@@ -33,7 +33,7 @@
                          rows="5"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
-                         rowsPerPageTemplate="10,20"
+                         rowsPerPageTemplate="5,10,20"
                          var="curriculum" 
                          emptyMessage="No se han encontrado hojas de vida">
 
@@ -71,10 +71,12 @@
                 <p:column headerText="Teléfono" filterBy="#{curriculum.telefono}">
                     <h:outputText value="#{curriculum.telefono}"/>
                 </p:column>
-                <p:column headerText="Profesión    " filterBy="#{curriculum.profesion}">
+                <p:column headerText="Profesión" filterBy="#{curriculum.profesion}">
                     <h:outputText value="#{curriculum.profesion}"/>
                 </p:column>
-
+                <p:column headerText="Estado" filterBy="#{curriculum.estado}">
+                    <h:outputText value="#{curriculum.estado}"/>
+                </p:column>
                 <p:column selectionMode="multiple" style="text-align:center"/>
                 <p:column headerText="Acciones" exportable="false"  >
                     <center>
@@ -114,14 +116,12 @@
 
             <br></br>
             <p:outputPanel style="text-align: center">
-                <p:commandButton value="Enviar a pruebas psicotécnicas" 
-                                 title="Enviar pruebas psicotécnicas"
-                                 update="multiCurriculumDetail"
-                                 oncomplete="PF('multiCurriculumDialog').show()"
-                                 icon="fa fa-paper-plane"
-                                 styleClass="btn btn-primary"
-                                 >
-                </p:commandButton>
+                <p:commandButton value="Enviar a pruebas psicotécnicas"
+                                     icon="fa fa-paper-plane"
+                                     styleClass="btn btn-primary"
+                                     action="#{curriculumMb.guardar2()}" 
+                                     />
+                
             </p:outputPanel>
             
             <p:confirmDialog global="true" showEffect="fade" 
@@ -141,7 +141,7 @@
                              id="multiCurriculumDetail"
                              paginator="true"
                              rows="5"
-                             rowsPerPageTemplate="10,20"
+                             rowsPerPageTemplate="5,10,20"
                              var="curriculum">
                     <f:facet name="header">
                         <div style="float:right;padding-top: 5px;">
@@ -179,7 +179,11 @@
                     <p:column headerText="Profesión" filterBy="#{curriculum.profesion}">
                         <h:outputText value="#{curriculum.profesion}"/>
                     </p:column>
+                    <p:column headerText="Estado" filterBy="#{curriculum.estado}">
+                        <h:outputText value="#{curriculum.estado}"/>
+                </p:column>
                     <p:column headerText="APROBADO" selectionMode="multiple" style="text-align:center" />
+                     <p:column headerText="NO APROBADO" selectionMode="multiple" style="text-align:center" />
                     <p:column headerText="OBSERVACIONES"></p:column>
                     
                 </p:dataTable>
@@ -229,10 +233,10 @@
                                         <p:inputText value="#{curriculumMb.curriculumDto.idAspirante}"
                                                      required="true"
                                                      requiredMessage="Campo obligatorio"
-                                                     id="inputId">
+                                                     id="inputId"
+                                                     type="hidden">
                                             <p:keyFilter regEx="/[\d\-\.]/"/>
                                         </p:inputText>
-                                        <p:outputLabel for="@previous" value="Id Asp." />
                                         <p:message for="inputId"/>
                                     </span>
                                 </h:panelGroup>

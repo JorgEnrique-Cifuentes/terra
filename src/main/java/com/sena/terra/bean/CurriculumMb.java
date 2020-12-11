@@ -35,9 +35,10 @@ public class CurriculumMb implements Serializable {
     private EstudiosRealizadosDto estudiosRealizadosDto;
 
     private List<CurriculumDto> listaCurriculums;
+    private List<CurriculumDto> listaCurriculumsFilter;
     private List<CurriculumDto> filter;
     private List<CurriculumDto> curriculumSeleccionados;
-     private CurriculumDto curriculumSeleccionado;
+    private CurriculumDto curriculumSeleccionado;
     private List<CurriculumDto> curriculumSeleccionados2; 
     
 
@@ -47,6 +48,21 @@ public class CurriculumMb implements Serializable {
         curriculumSeleccionados = new ArrayList<>();
         curriculumSeleccionados2 = new ArrayList<>();
         filter = this.listaCurriculums;
+        
+    }
+    
+    public void cargar(){
+        CurriculumDto dos;
+        List<CurriculumDto> listaCurri = new ArrayList<>();
+        for(int i = 0;i <=listaCurriculums.size()-1;i++){
+            dos = listaCurriculums.get(i);
+            System.out.println(dos.getEstado());
+            if(dos.getEstado().equals("EN PROCESO")){
+                listaCurri.add(dos);
+                System.out.println("000000000000000000000000000000000000000000");
+            }
+        }
+        setListaCurriculumsFilter(listaCurri);
     }
 
     public void guardarExperienciaLaboral() {
@@ -123,6 +139,26 @@ public class CurriculumMb implements Serializable {
         MessageUtil.addMessageInfo("Exitoso", "Se ha guardado correctamente");
         JsfUtility.reloadPage();
     }
+    
+     public void guardar2() {
+          
+          if(curriculumSeleccionados.size()>=1){
+              int i = 0;
+              while(i<= curriculumSeleccionados.size()-1){
+                final CurriculumDto uno;
+                uno = curriculumSeleccionados.get(i);
+                uno.setEstado("EN PROCESO");
+                this.curriculumDto = uno; 
+                System.out.println("el curriculum"+this.curriculumDto);
+                this.curriculumDao.guardar(this.curriculumDto);  
+                i++;
+              }
+              JsfUtility.reloadPageCurriculum();
+          }else{
+              MessageUtil.addMessageError("Error de validación", "Seleccione al menos un candidato");
+          }
+          
+    }
 
     public void preEditar(final CurriculumDto curriculumDtoEdit) {
         this.curriculumDto = curriculumDtoEdit;
@@ -165,7 +201,20 @@ public class CurriculumMb implements Serializable {
     public void setListaCurriculums(List<CurriculumDto> listaCurriculums) {
         this.listaCurriculums = listaCurriculums;
     }
+    
+     /**
+     * @return the listaCurriculums
+     */
+    public List<CurriculumDto> getListaCurriculumsFilter() {
+        return listaCurriculumsFilter;
+    }
 
+    /**
+     * @param listaCurriculums the listaCurriculums to set
+     */
+    public void setListaCurriculumsFilter(List<CurriculumDto> listaCurriculumsFilter) {
+        this.listaCurriculumsFilter = listaCurriculumsFilter;
+    }
     /**
      * @return the curriculumDto
      */

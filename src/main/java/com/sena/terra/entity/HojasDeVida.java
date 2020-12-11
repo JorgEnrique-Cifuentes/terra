@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.sena.terra.entity;
 
 import java.io.Serializable;
@@ -43,7 +38,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "HojasDeVida.findBySegundoApellido", query = "SELECT h FROM HojasDeVida h WHERE h.segundoApellido = :segundoApellido"),
     @NamedQuery(name = "HojasDeVida.findByDireccion", query = "SELECT h FROM HojasDeVida h WHERE h.direccion = :direccion"),
     @NamedQuery(name = "HojasDeVida.findByTelefono", query = "SELECT h FROM HojasDeVida h WHERE h.telefono = :telefono"),
-    @NamedQuery(name = "HojasDeVida.findByCorreoElectronico", query = "SELECT h FROM HojasDeVida h WHERE h.correoElectronico = :correoElectronico")})
+    @NamedQuery(name = "HojasDeVida.findByCorreoElectronico", query = "SELECT h FROM HojasDeVida h WHERE h.correoElectronico = :correoElectronico"),
+    @NamedQuery(name = "HojasDeVida.findByEstado", query = "SELECT h FROM HojasDeVida h WHERE h.estado = :estado")})
 public class HojasDeVida implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -96,11 +92,16 @@ public class HojasDeVida implements Serializable {
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "PROFESION")
-    private String profesion;
+    private String profesion;   
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_CIUDAD")
     private Integer idCiudad;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 15)
+    @Column(name = "ESTADO")
+    private String estado;
     @JoinColumn(name = "ID_PRUEBAS_PSICOTECNICAS", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private PruebasPsicotecnicas idPruebasPsicotecnicas;
@@ -116,7 +117,7 @@ public class HojasDeVida implements Serializable {
         this.idAspirante = idAspirante;
     }
 
-    public HojasDeVida(int idAspirante, String tipoDocumento, String numeroDocumento, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String direccion, String telefono, String correoElectronico) {
+    public HojasDeVida(int idAspirante, String tipoDocumento, String numeroDocumento, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String direccion, String telefono, String correoElectronico, String estado) {
         this.idAspirante = idAspirante;
         this.tipoDocumento = tipoDocumento;
         this.numeroDocumento = numeroDocumento;
@@ -127,6 +128,7 @@ public class HojasDeVida implements Serializable {
         this.direccion = direccion;
         this.telefono = telefono;
         this.correoElectronico = correoElectronico;
+        this.estado = estado;
     }
 
     public int getIdAspirante() {
@@ -230,7 +232,7 @@ public class HojasDeVida implements Serializable {
     public void setPuntaje(String puntaje) {
         this.puntaje = puntaje;
     }
-    
+
     /**
      * @return the idCiudad
      */
@@ -245,7 +247,6 @@ public class HojasDeVida implements Serializable {
         this.idCiudad = idCiudad;
     }
 
-    
     /**
      * @return the profesion
      */
@@ -258,6 +259,14 @@ public class HojasDeVida implements Serializable {
      */
     public void setProfesion(String profesion) {
         this.profesion = profesion;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     @XmlTransient
